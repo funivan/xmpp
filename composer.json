@@ -1,0 +1,13 @@
+{
+  "name": "fiv/xmpp",
+  "description": "Fork of xmpp library",
+  "license": "GPL v2",
+  "require": {
+
+  },
+  "autoload": {
+    "psr-0": {
+      "Fiv\\Xmpp": "src"
+    }
+  }
+}
