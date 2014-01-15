@@ -2,4 +2,4 @@
 .gitignore export-ignore
 composer.json export-ignore
 composer.lock export-ignore
-.example/ export-ignore
+example/ export-ignore
