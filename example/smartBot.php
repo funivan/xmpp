@@ -6,7 +6,7 @@
   $user = 'user.name@gmail.com';
   $password = 'password';
 
-  $conn = new \Fiv\Xmpp\Xmpp('talk.google.com', 5222, $user, $password, 'xmpphp', 'gmail.com', true, \Fiv\Xmpp\Log::LEVEL_INFO);
+  $conn = new \Fiv\Xmpp\Xmpp('talk.google.com', 5222, $user, $password, 'xmpphp', 'google.com', true, \Fiv\Xmpp\Log::LEVEL_INFO);
 
   $conn->autoSubscribe();
   $vCardRequest = array();

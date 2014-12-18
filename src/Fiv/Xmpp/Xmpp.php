@@ -385,10 +385,14 @@
      * TLS proceed handler
      *
      * @param string $xml
+     * @throws Exception
      */
     protected function tls_proceed_handler($xml) {
       $this->log->log("Starting TLS encryption");
-      stream_socket_enable_crypto($this->socket, true, STREAM_CRYPTO_METHOD_SSLv23_CLIENT);
+      $result = stream_socket_enable_crypto($this->socket, true, STREAM_CRYPTO_METHOD_SSLv23_CLIENT);
+      if ($result == false) {
+        throw new Exception('Cant enable socket crypto');
+      }
       $this->reset();
     }
 
@@ -396,7 +400,7 @@
      * Retrieves the vcard
      *
      */
-    public function getVCard($jid = Null) {
+    public function getVCard($jid = null) {
       $id = $this->getID();
       $this->addIdHandler($id, 'vcard_get_handler');
       if ($jid) {
