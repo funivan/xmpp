@@ -302,12 +302,10 @@
      * Add Event Handler
      *
      * @param $name
-     * @param string $pointer
-     * @param string $obj
-     * @internal param int $id
+     * @param callable $callback
      */
-    public function addEventHandler($name, $pointer, $obj) {
-      $this->eventhandlers[] = [$name, $pointer, $obj];
+    public function addEventHandler($name, callable $callback) {
+      $this->eventhandlers[$name][] = $callback;
     }
 
 
@@ -604,9 +602,9 @@
                 }
               }
               if ($searchxml !== null) {
-                if ($handler[2] === null) $handler[2] = $this;
+                $obj = ($handler[2] !== null) ? $handler[2] : $this;
                 $this->log->log("Calling {$handler[1]}", Log::LEVEL_DEBUG);
-                $handler[2]->$handler[1]($this->xmlobj[2]);
+                call_user_func_array([$obj, $handler[1]], [$this->xmlobj[2]]);
               }
             }
           }
@@ -679,25 +677,25 @@
      */
     public function event($name, $payload = null) {
       $this->log->log("EVENT: $name", Log::LEVEL_DEBUG);
-      foreach ($this->eventhandlers as $handler) {
-        if ($name == $handler[0]) {
-          if ($handler[2] === null) {
-            $handler[2] = $this;
-          }
-          $handler[2]->$handler[1]($payload);
-        }
+      $events = !empty($this->eventhandlers[$name]) ? $this->eventhandlers[$name] : [];
+      foreach ($events as $handler) {
+        $handler($payload);
       }
       foreach ($this->until as $key => $until) {
-        if (is_array($until)) {
-          if (in_array($name, $until)) {
-            $this->until_payload[$key][] = [$name, $payload];
-            if (!isset($this->until_count[$key])) {
-              $this->until_count[$key] = 0;
-            }
-            $this->until_count[$key] += 1;
-            #$this->until[$key] = false;
-          }
+
+        if (!is_array($until)) {
+          continue;
         }
+
+        if (!in_array($name, $until)) {
+          continue;
+        }
+
+        $this->until_payload[$key][] = [$name, $payload];
+        if (!isset($this->until_count[$key])) {
+          $this->until_count[$key] = 0;
+        }
+        $this->until_count[$key] += 1;
       }
     }
 
