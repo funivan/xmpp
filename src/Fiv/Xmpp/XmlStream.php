@@ -84,12 +84,12 @@
     /**
      * @var array
      */
-    protected $ns_map = array();
+    protected $ns_map = [];
 
     /**
      * @var array
      */
-    protected $current_ns = array();
+    protected $current_ns = [];
 
     /**
      * @var array
@@ -99,22 +99,22 @@
     /**
      * @var array
      */
-    protected $nshandlers = array();
+    protected $nshandlers = [];
 
     /**
      * @var array
      */
-    protected $xpathhandlers = array();
+    protected $xpathhandlers = [];
 
     /**
      * @var array
      */
-    protected $idhandlers = array();
+    protected $idhandlers = [];
 
     /**
      * @var array
      */
-    protected $eventhandlers = array();
+    protected $eventhandlers = [];
 
     /**
      * @var integer
@@ -144,7 +144,7 @@
     /**
      * @var array
      */
-    protected $until_payload = array();
+    protected $until_payload = [];
 
     /**
      * @var Log
@@ -182,6 +182,7 @@
      */
     protected $reconnectTimeout = 30;
 
+
     /**
      * Constructor
      *
@@ -200,6 +201,7 @@
       $this->log = new Log($printlog, $loglevel);
     }
 
+
     /**
      * Destructor
      * Cleanup connection
@@ -210,6 +212,7 @@
       }
     }
 
+
     /**
      * Return the log instance
      *
@@ -218,6 +221,7 @@
     public function getLog() {
       return $this->log;
     }
+
 
     /**
      * Get next ID
@@ -229,6 +233,7 @@
       return $this->lastid;
     }
 
+
     /**
      * Set SSL
      *
@@ -239,6 +244,7 @@
       $this->use_ssl = $use;
     }
 
+
     /**
      * Add ID Handler
      *
@@ -247,8 +253,9 @@
      * @param string $obj
      */
     public function addIdHandler($id, $pointer, $obj = null) {
-      $this->idhandlers[$id] = array($pointer, $obj);
+      $this->idhandlers[$id] = [$pointer, $obj];
     }
+
 
     /**
      * Add Handler
@@ -261,8 +268,9 @@
      */
     public function addHandler($name, $ns, $pointer, $obj = null, $depth = 1) {
       #TODO deprication warning
-      $this->nshandlers[] = array($name, $ns, $pointer, $obj, $depth);
+      $this->nshandlers[] = [$name, $ns, $pointer, $obj, $depth];
     }
+
 
     /**
      * Add XPath Handler
@@ -275,19 +283,20 @@
       if (preg_match_all("/\(?{[^\}]+}\)?(\/?)[^\/]+/", $xpath, $regs)) {
         $ns_tags = $regs[0];
       } else {
-        $ns_tags = array($xpath);
+        $ns_tags = [$xpath];
       }
       foreach ($ns_tags as $ns_tag) {
         list($l, $r) = explode("}", $ns_tag);
         if ($r != null) {
-          $xpart = array(substr($l, 1), $r);
+          $xpart = [substr($l, 1), $r];
         } else {
-          $xpart = array(null, $l);
+          $xpart = [null, $l];
         }
         $xpath_array[] = $xpart;
       }
-      $this->xpathhandlers[] = array($xpath_array, $pointer, $obj);
+      $this->xpathhandlers[] = [$xpath_array, $pointer, $obj];
     }
+
 
     /**
      * Add Event Handler
@@ -298,8 +307,9 @@
      * @internal param int $id
      */
     public function addEventHandler($name, $pointer, $obj) {
-      $this->eventhandlers[] = array($name, $pointer, $obj);
+      $this->eventhandlers[] = [$name, $pointer, $obj];
     }
+
 
     /**
      * Connect to XMPP Host
@@ -345,6 +355,7 @@
       }
     }
 
+
     /**
      * Reconnect XMPP Host
      */
@@ -357,6 +368,7 @@
       }
     }
 
+
     /**
      * @param $timeout
      */
@@ -364,12 +376,13 @@
       $this->reconnectTimeout = $timeout;
     }
 
+
     /**
      * Disconnect from XMPP Host
      */
     public function disconnect() {
       $this->log->log("Disconnecting...", Log::LEVEL_VERBOSE);
-      if (false == (bool)$this->socket) {
+      if (false == (bool) $this->socket) {
         return;
       }
       $this->reconnect = false;
@@ -379,6 +392,7 @@
       $this->disconnected = true;
     }
 
+
     /**
      * Are we are disconnected?
      *
@@ -387,6 +401,7 @@
     public function isDisconnected() {
       return $this->disconnected;
     }
+
 
     /**
      * Core reading tool
@@ -401,12 +416,12 @@
 
       do {
         $starttime = (microtime(true) * 1000000);
-        $read = array($this->socket);
-        $write = array();
-        $except = array();
+        $read = [$this->socket];
+        $write = [];
+        $except = [];
         if (is_null($maximum)) {
-          $secs = NULL;
-          $usecs = NULL;
+          $secs = null;
+          $usecs = null;
         } else if ($maximum == 0) {
           $secs = 0;
           $usecs = 0;
@@ -423,7 +438,7 @@
             if (\is_resource($this->socket)) {
               fclose($this->socket);
             }
-            $this->socket = NULL;
+            $this->socket = null;
             return false;
           }
         } else if ($updated > 0) {
@@ -434,7 +449,7 @@
               $this->doReconnect();
             } else {
               fclose($this->socket);
-              $this->socket = NULL;
+              $this->socket = null;
               return false;
             }
           }
@@ -450,14 +465,16 @@
       return true;
     }
 
+
     /**
      * Process
      *
      * @return string
      */
     public function process() {
-      $this->__process(NULL);
+      $this->__process(null);
     }
+
 
     /**
      * Process until a timeout occurs
@@ -465,13 +482,14 @@
      * @param integer $timeout
      * @return string
      */
-    public function processTime($timeout = NULL) {
+    public function processTime($timeout = null) {
       if (is_null($timeout)) {
-        return $this->__process(NULL);
+        return $this->__process(null);
       } else {
         return $this->__process($timeout * 1000000);
       }
     }
+
 
     /**
      * Process until a specified event or a timeout occurs
@@ -482,7 +500,7 @@
      */
     public function processUntil($event, $timeout = -1) {
       $start = time();
-      if (!is_array($event)) $event = array($event);
+      if (!is_array($event)) $event = [$event];
       $this->until[] = $event;
       end($this->until);
       $event_key = key($this->until);
@@ -497,10 +515,11 @@
         unset($this->until_count[$event_key]);
         unset($this->until[$event_key]);
       } else {
-        $payload = array();
+        $payload = [];
       }
       return $payload;
     }
+
 
     /**
      * Obsolete?
@@ -508,6 +527,7 @@
     public function Xapply_socket($socket) {
       $this->socket = $socket;
     }
+
 
     /**
      * XML start callback
@@ -549,6 +569,7 @@
       }
       $this->xmlobj[$this->xml_depth] = $obj;
     }
+
 
     /**
      * XML end callback
@@ -635,6 +656,7 @@
       }
     }
 
+
     /**
      * XML character callback
      * @see xml_set_character_data_handler
@@ -647,6 +669,7 @@
         $this->xmlobj[$this->xml_depth]->data .= $data;
       }
     }
+
 
     /**
      * Event?
@@ -667,7 +690,7 @@
       foreach ($this->until as $key => $until) {
         if (is_array($until)) {
           if (in_array($name, $until)) {
-            $this->until_payload[$key][] = array($name, $payload);
+            $this->until_payload[$key][] = [$name, $payload];
             if (!isset($this->until_count[$key])) {
               $this->until_count[$key] = 0;
             }
@@ -677,6 +700,7 @@
         }
       }
     }
+
 
     /**
      * Read from socket
@@ -698,6 +722,7 @@
       return true;
     }
 
+
     /**
      * Send to socket
      *
@@ -706,11 +731,11 @@
      * @return bool|int
      * @return bool|int
      */
-    public function send($msg, $timeout = NULL) {
+    public function send($msg, $timeout = null) {
 
       if (is_null($timeout)) {
-        $secs = NULL;
-        $usecs = NULL;
+        $secs = null;
+        $usecs = null;
       } else if ($timeout == 0) {
         $secs = 0;
         $usecs = 0;
@@ -720,13 +745,13 @@
         $secs = floor(($maximum - $usecs) / 1000000);
       }
 
-      $read = array();
-      $write = array($this->socket);
-      $except = array();
+      $read = [];
+      $write = [$this->socket];
+      $except = [];
 
       $select = @stream_select($read, $write, $except, $secs, $usecs);
 
-      if ($select === False) {
+      if ($select === false) {
         $this->log->log("ERROR sending message; reconnecting.");
         $this->doReconnect();
         # TODO: retry send here
@@ -740,7 +765,7 @@
 
       $sentbytes = @fwrite($this->socket, $msg);
       $this->log->log("SENT: " . mb_substr($msg, 0, $sentbytes, '8bit'), Log::LEVEL_VERBOSE);
-      if ($sentbytes === FALSE) {
+      if ($sentbytes === false) {
         $this->log->log("ERROR sending message; reconnecting.", Log::LEVEL_ERROR);
         $this->doReconnect();
         return false;
@@ -749,13 +774,15 @@
       return $sentbytes;
     }
 
+
     /**
      * @return float
      */
     public function time() {
       list($usec, $sec) = explode(" ", microtime());
-      return (float)$sec + (float)$usec;
+      return (float) $sec + (float) $usec;
     }
+
 
     /**
      * Reset connection
@@ -763,13 +790,14 @@
     public function reset() {
       $this->xml_depth = 0;
       unset($this->xmlobj);
-      $this->xmlobj = array();
+      $this->xmlobj = [];
       $this->setupParser();
       if (!$this->is_server) {
         $this->send($this->stream_start);
       }
       $this->been_reset = true;
     }
+
 
     /**
      * Setup the XML parser
@@ -783,13 +811,14 @@
       xml_set_character_data_handler($this->parser, 'charXML');
     }
 
+
     /**
      * @return bool
      */
     public function readyToProcess() {
-      $read = array($this->socket);
-      $write = array();
-      $except = array();
+      $read = [$this->socket];
+      $write = [];
+      $except = [];
       $updated = @stream_select($read, $write, $except, 0);
       return (($updated !== false) && ($updated > 0));
     }

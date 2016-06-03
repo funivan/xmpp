@@ -51,14 +51,14 @@
      *
      * @var array
      */
-    public $attrs = array();
+    public $attrs = [];
 
     /**
      * Subs?
      *
      * @var array
      */
-    public $subs = array();
+    public $subs = [];
 
     /**
      * Node data
@@ -66,6 +66,7 @@
      * @var string
      */
     public $data = '';
+
 
     /**
      * Constructor
@@ -75,7 +76,7 @@
      * @param array $attrs
      * @param string $data
      */
-    public function __construct($name, $ns = '', $attrs = array(), $data = '') {
+    public function __construct($name, $ns = '', $attrs = [], $data = '') {
       $this->name = strtolower($name);
       $this->ns = $ns;
       if (is_array($attrs) && count($attrs)) {
@@ -85,6 +86,7 @@
       }
       $this->data = $data;
     }
+
 
     /**
      * Dump this XML Object to output.
@@ -99,6 +101,7 @@
       }
     }
 
+
     /**
      * Return this XML Object in xml notation
      *
@@ -106,7 +109,7 @@
      * @return string
      */
     public function toString($str = '') {
-      $str .= "<{$this->name} xmlns='{$this->ns}' ";
+      $str .= "<" . $this->name . " xmlns='" . $this->ns . "' ";
       foreach ($this->attrs as $key => $value) {
         if ($key != 'xmlns') {
           $value = htmlspecialchars($value);
@@ -118,9 +121,10 @@
         $str .= $sub->toString();
       }
       $body = htmlspecialchars($this->data);
-      $str .= "$body</{$this->name}>";
+      $str .= $body . "</" . $this->name . ">";
       return $str;
     }
+
 
     /**
      * Has this XML Object the given sub?
@@ -131,10 +135,13 @@
      */
     public function hasSub($name, $ns = null) {
       foreach ($this->subs as $sub) {
-        if (($name == "*" or $sub->name == $name) and ($ns == null or $sub->ns == $ns)) return true;
+        if (($name == "*" or $sub->name == $name) and ($ns == null or $sub->ns == $ns)) {
+          return true;
+        }
       }
       return false;
     }
+
 
     /**
      * Return a sub

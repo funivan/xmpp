@@ -29,7 +29,6 @@
    * @author   Stephan Wentz <JID: stephan@jabber.wentz.it>
    * @author   Michael Garvin <JID: gar@netflint.net>
    * @copyright  2008 Nathanael C. Fritz
-
    */
   class Log {
 
@@ -46,12 +45,12 @@
     /**
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * @var array
      */
-    protected $names = array('ERROR', 'WARNING', 'INFO', 'DEBUG', 'VERBOSE');
+    protected $names = ['ERROR', 'WARNING', 'INFO', 'DEBUG', 'VERBOSE'];
 
     /**
      * @var integer
@@ -63,6 +62,7 @@
      */
     protected $printout;
 
+
     /**
      * Constructor
      *
@@ -70,9 +70,10 @@
      * @param int $runlevel
      */
     public function __construct($printout = false, $runlevel = self::LEVEL_INFO) {
-      $this->printout = (boolean)$printout;
-      $this->runlevel = (int)$runlevel;
+      $this->printout = (boolean) $printout;
+      $this->runlevel = (int) $runlevel;
     }
+
 
     /**
      * Add a message to the log data array
@@ -88,6 +89,7 @@
         $this->writeLine($msg, $runlevel, $time);
       }
     }
+
 
     /**
      * Output the complete log.
@@ -106,9 +108,10 @@
         }
       }
       if ($clear) {
-        $this->data = array();
+        $this->data = [];
       }
     }
+
 
     /**
      * @param $msg

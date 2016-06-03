@@ -89,6 +89,7 @@
      */
     public $roster;
 
+
     /**
      * Constructor
      *
@@ -126,6 +127,7 @@
       $this->addXPathHandler('iq/{jabber:iq:roster}query', 'roster_iq_handler');
     }
 
+
     /**
      * Turn encryption on/ff
      *
@@ -135,6 +137,7 @@
       $this->use_encryption = $useEncryption;
     }
 
+
     /**
      * Turn on auto-authorization of subscription requests.
      *
@@ -143,6 +146,7 @@
     public function autoSubscribe($autoSubscribe = true) {
       $this->auto_subscribe = $autoSubscribe;
     }
+
 
     /**
      * Send XMPP Message
@@ -170,6 +174,7 @@
 
       $this->send($out);
     }
+
 
     /**
      * Set Presence
@@ -202,6 +207,7 @@
       $this->send($out);
     }
 
+
     /**
      * Send Auth request
      *
@@ -210,6 +216,7 @@
     public function subscribe($subscribeTo) {
       $this->send("<presence type='subscribe' to='" . $subscribeTo . "' from='" . $this->fulljid . "' />");
     }
+
 
     /**
      * Message handler
@@ -233,6 +240,7 @@
       $this->event('message', $payload);
 
     }
+
 
     /**
      * Presence handler
@@ -263,6 +271,7 @@
       }
     }
 
+
     /**
      * Features handler
      *
@@ -285,6 +294,7 @@
       }
     }
 
+
     /**
      * SASL success handler
      *
@@ -295,6 +305,7 @@
       $this->authed = true;
       $this->reset();
     }
+
 
     /**
      * SASL feature handler
@@ -308,6 +319,7 @@
 
       throw new Exception('Auth failed!');
     }
+
 
     /**
      * Resource bind handler
@@ -326,6 +338,7 @@
       $this->send("<iq xmlns='jabber:client' type='set' id='$id'><session xmlns='urn:ietf:params:xml:ns:xmpp-session' /></iq>");
     }
 
+
     /**
      * Retrieves the roster
      *
@@ -334,6 +347,7 @@
       $id = $this->getID();
       $this->send("<iq xmlns='jabber:client' type='get' id='$id'><query xmlns='jabber:iq:roster' /></iq>");
     }
+
 
     /**
      * Roster iq handler
@@ -345,7 +359,7 @@
       $status = "result";
       $xmlRoster = $xml->sub('query');
       foreach ($xmlRoster->subs as $item) {
-        $groups = array();
+        $groups = [];
         if ($item->name == 'item') {
           $jid = $item->attrs['jid']; //REQUIRED
           $name = $item->attrs['name']; //MAY
@@ -355,7 +369,7 @@
               $groups[] = $subitem->data;
             }
           }
-          $contacts[] = array($jid, $subscription, $name, $groups); //Store for action if no errors happen
+          $contacts[] = [$jid, $subscription, $name, $groups]; //Store for action if no errors happen
         } else {
           $status = "error";
         }
@@ -370,6 +384,7 @@
       }
     }
 
+
     /**
      * Session start handler
      *
@@ -380,6 +395,7 @@
       $this->session_started = true;
       $this->event('session_start');
     }
+
 
     /**
      * TLS proceed handler
@@ -396,6 +412,7 @@
       $this->reset();
     }
 
+
     /**
      * Retrieves the vcard
      *
@@ -410,18 +427,19 @@
       }
     }
 
+
     /**
      * VCard retrieval handler
      *
      * @param XML Object $xml
      */
     protected function vcard_get_handler($xml) {
-      $vcard_array = array();
+      $vcard_array = [];
       $vcard = $xml->sub('vcard');
       // go through all of the sub elements and add them to the vcard array
       foreach ($vcard->subs as $sub) {
         if ($sub->subs) {
-          $vcard_array[$sub->name] = array();
+          $vcard_array[$sub->name] = [];
           foreach ($sub->subs as $sub_child) {
             $vcard_array[$sub->name][$sub_child->name] = $sub_child->data;
           }

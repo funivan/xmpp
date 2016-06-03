@@ -1,4 +1,5 @@
 <?php
+
   namespace Fiv\Xmpp;
 
   /**
@@ -36,19 +37,21 @@
      * Contains array with potentially two indexes 'contact' and 'presence'
      * @var array
      */
-    protected $roster_array = array();
+    protected $roster_array = [];
+
 
     /**
      * Constructor
      *
      */
-    public function __construct($roster_array = array()) {
+    public function __construct($roster_array = []) {
       if ($this->verifyRoster($roster_array)) {
         $this->roster_array = $roster_array; //Allow for prepopulation with existing roster
       } else {
-        $this->roster_array = array();
+        $this->roster_array = [];
       }
     }
+
 
     /**
      *
@@ -59,8 +62,9 @@
      */
     protected function verifyRoster($roster_array) {
       #TODO once we know *what* a valid roster array looks like
-      return True;
+      return true;
     }
+
 
     /**
      *
@@ -71,14 +75,15 @@
      * @param string $name
      * @param array $groups
      */
-    public function addContact($jid, $subscription, $name = '', $groups = array()) {
-      $contact = array('jid' => $jid, 'subscription' => $subscription, 'name' => $name, 'groups' => $groups);
+    public function addContact($jid, $subscription, $name = '', $groups = []) {
+      $contact = ['jid' => $jid, 'subscription' => $subscription, 'name' => $name, 'groups' => $groups];
       if ($this->isContact($jid)) {
         $this->roster_array[$jid]['contact'] = $contact;
       } else {
-        $this->roster_array[$jid] = array('contact' => $contact);
+        $this->roster_array[$jid] = ['contact' => $contact];
       }
     }
+
 
     /**
      *
@@ -94,6 +99,7 @@
       return null;
     }
 
+
     /**
      *
      * Discover if a contact exists in the roster via jid
@@ -104,6 +110,7 @@
     public function isContact($jid) {
       return (array_key_exists($jid, $this->roster_array));
     }
+
 
     /**
      *
@@ -121,11 +128,12 @@
           $this->addContact($jid, 'not-in-roster');
         }
         $resource = $resource ? $resource : '';
-        $this->roster_array[$jid]['presence'][$resource] = array('priority' => $priority, 'show' => $show, 'status' => $status);
+        $this->roster_array[$jid]['presence'][$resource] = ['priority' => $priority, 'show' => $show, 'status' => $status];
       } else { //Nuke unavailable resources to save memory
         unset($this->roster_array[$jid]['resource'][$resource]);
       }
     }
+
 
     /**
      *
@@ -138,7 +146,7 @@
       $split = explode("/", $jid);
       $jid = $split[0];
       if ($this->isContact($jid)) {
-        $current = array('resource' => '', 'active' => '', 'priority' => -129, 'show' => '', 'status' => ''); //Priorities can only be -128 = 127
+        $current = ['resource' => '', 'active' => '', 'priority' => -129, 'show' => '', 'status' => '']; //Priorities can only be -128 = 127
         foreach ($this->roster_array[$jid]['presence'] as $resource => $presence) {
           //Highest available priority or just highest priority
           if ($presence['priority'] > $current['priority'] and (($presence['show'] == "chat" or $presence['show'] == "available") or ($current['show'] != "chat" or $current['show'] != "available"))) {
@@ -149,8 +157,9 @@
         return $current;
       }
 
-      return array();
+      return [];
     }
+
 
     /**
      *
