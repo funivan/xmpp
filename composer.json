@@ -6,8 +6,8 @@
 
   },
   "autoload": {
-    "psr-0": {
-      "Fiv\\Xmpp": "src"
+    "psr-4": {
+      "Fiv\\Xmpp\\": "src/"
     }
   }
 }
