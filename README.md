@@ -1,5 +1,7 @@
 #About
 
+[![Build Status](https://travis-ci.org/funivan/xmpp.svg?branch=master)](https://travis-ci.org/funivan/xmpp)
+
 Elegant PHP library for XMPP (aka Jabber, Google Talk, etc).
 
 Example:
