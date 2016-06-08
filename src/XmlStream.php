@@ -618,13 +618,17 @@
           if ($searchxml !== null and $searchxml->name == $handler[0] and ($searchxml->ns == $handler[1] or (!$handler[1] and $searchxml->ns == $this->default_ns))) {
             if ($handler[3] === null) $handler[3] = $this;
             $this->log->log("Calling {$handler[2]}", Log::LEVEL_DEBUG);
-            $handler[3]->$handler[2]($this->xmlobj[2]);
+            $obj = $handler[3];
+            $fn = $handler[2];
+            call_user_func_array([$obj, $fn], [$this->xmlobj[2]]);
           }
         }
         foreach ($this->idhandlers as $id => $handler) {
           if (array_key_exists('id', $this->xmlobj[2]->attrs) and $this->xmlobj[2]->attrs['id'] == $id) {
             if ($handler[1] === null) $handler[1] = $this;
-            $handler[1]->$handler[0]($this->xmlobj[2]);
+            $obj = $handler[1];
+            $fn = $handler[0];
+            call_user_func_array([$obj, $fn], [$this->xmlobj[2]]);
             #id handlers are only used once
             unset($this->idhandlers[$id]);
             break;
